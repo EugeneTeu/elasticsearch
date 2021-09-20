@@ -414,7 +414,9 @@ public class IndexRequest extends ReplicatedWriteRequest<IndexRequest> implement
     }
 
     public Map<String, Object> sourceAsMap() {
-        return XContentHelper.convertToMap(source, false, contentType).v2();
+        Map<String, Object> sourceMap =  XContentHelper.convertToMap(source, false, contentType).v2();
+        sourceMap.put("Index_Request_item", "Eugene");
+        return sourceMap;
     }
 
     /**
@@ -759,6 +761,7 @@ public class IndexRequest extends ReplicatedWriteRequest<IndexRequest> implement
         if (out.getVersion().onOrAfter(Version.V_7_10_0)) {
             out.writeBoolean(requireAlias);
         }
+//        out.writeString("Eugene");
     }
 
     @Override

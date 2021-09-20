@@ -111,6 +111,7 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
     @Override
     protected void dispatchedShardOperationOnPrimary(BulkShardRequest request, IndexShard primary,
             ActionListener<PrimaryResult<BulkShardRequest, BulkShardResponse>> listener) {
+        //EUGENE: Receives the bulk request and then gets the threads from thread pool
         ClusterStateObserver observer = new ClusterStateObserver(clusterService, request.timeout(), logger, threadPool.getThreadContext());
         performOnPrimary(request, primary, updateHelper, threadPool::absoluteTimeInMillis,
             (update, shardId, type, mappingListener) -> {
@@ -155,12 +156,13 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
         new ActionRunnable<PrimaryResult<BulkShardRequest, BulkShardResponse>>(listener) {
 
             private final Executor executor = threadPool.executor(executorName);
-
+            // EUGENE: This creates the execution context with the given request
             private final BulkPrimaryExecutionContext context = new BulkPrimaryExecutionContext(request, primary);
 
             @Override
             protected void doRun() throws Exception {
                 while (context.hasMoreOperationsToExecute()) {
+                    //EUGENE: This executes the request
                     if (executeBulkItemRequest(context, updateHelper, nowInMillisSupplier, mappingUpdater, waitForMappingUpdate,
                         ActionListener.wrap(v -> executor.execute(this), this::onRejection)) == false) {
                         // We are waiting for a mapping update on another thread, that will invoke this action again once its done
@@ -234,6 +236,7 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
                 context.markAsCompleted(context.getExecutionResult());
                 return true;
             }
+            //EUGENE: Update requests are changed to Create Request?
             // execute translated update request
             switch (updateResult.getResponseResult()) {
                 case CREATED:

@@ -115,6 +115,8 @@ public class RestIndexAction extends BaseRestHandler {
 
     @Override
     public RestChannelConsumer prepareRequest(final RestRequest request, final NodeClient client) throws IOException {
+        String dummyName = "{ \"test\" : \"eugene\" }";
+        byte[] bytes = dummyName.getBytes("UTF-8");
         IndexRequest indexRequest;
         final String type = request.param("type");
         if (type != null && type.equals(MapperService.SINGLE_MAPPING_NAME) == false) {

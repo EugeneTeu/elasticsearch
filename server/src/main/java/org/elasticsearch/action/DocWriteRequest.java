@@ -240,6 +240,7 @@ public interface DocWriteRequest<T> extends IndicesRequest, Accountable {
 
     /** write a document write (index/delete/update) request*/
     static void writeDocumentRequest(StreamOutput out, DocWriteRequest<?> request)  throws IOException {
+        System.out.format("%s\n", "PROCESSING WRITE DOCUMENT REQUEST");
         if (request instanceof IndexRequest) {
             out.writeByte((byte) 0);
             ((IndexRequest) request).writeTo(out);

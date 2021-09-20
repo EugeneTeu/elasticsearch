@@ -234,6 +234,7 @@ class BulkPrimaryExecutionContext {
 
     /** the current operation has been executed on the primary with the specified result */
     public void markOperationAsExecuted(Engine.Result result) {
+        // EUGENE: Here, the operation has already been executed by the engine and return in the Engine.Result document
         assertInvariants(ItemProcessingState.TRANSLATED);
         final BulkItemRequest current = getCurrentItem();
         DocWriteRequest docWriteRequest = getRequestToExecute();
@@ -255,6 +256,7 @@ class BulkPrimaryExecutionContext {
                 executionResult = new BulkItemResponse(current.id(), current.request().opType(), response);
                 // set a blank ShardInfo so we can safely send it to the replicas. We won't use it in the real response though.
                 executionResult.getResponse().setShardInfo(new ReplicationResponse.ShardInfo());
+                // EUGENE: This is to sync with Translog
                 locationToSync = TransportWriteAction.locationToSync(locationToSync, result.getTranslogLocation());
                 break;
             case FAILURE:

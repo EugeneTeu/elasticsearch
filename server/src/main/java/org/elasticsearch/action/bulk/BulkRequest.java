@@ -222,6 +222,7 @@ public class BulkRequest extends ActionRequest implements CompositeIndicesReques
      * Adds a framed data in binary format
      */
     public BulkRequest add(byte[] data, int from, int length, XContentType xContentType) throws IOException {
+        System.out.format("%s, $d\n", "PROCESSING A BULK REQUEST", from);
         return add(data, from, length, null, null, xContentType);
     }
 

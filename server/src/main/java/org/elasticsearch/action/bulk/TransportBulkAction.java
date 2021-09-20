@@ -143,7 +143,12 @@ public class TransportBulkAction extends HandledTransportAction<BulkRequest, Bul
     public static IndexRequest getIndexWriteRequest(DocWriteRequest<?> docWriteRequest) {
         IndexRequest indexRequest = null;
         if (docWriteRequest instanceof IndexRequest) {
+
             indexRequest = (IndexRequest) docWriteRequest;
+            //EUGENE: REPLACE INDEX REQUEST
+            Map<String, Object> originalSource = indexRequest.sourceAsMap();
+            originalSource.put("test_get_index_write_request", "eugene");
+            indexRequest.source(originalSource);
         } else if (docWriteRequest instanceof UpdateRequest) {
             UpdateRequest updateRequest = (UpdateRequest) docWriteRequest;
             indexRequest = updateRequest.docAsUpsert() ? updateRequest.doc() : updateRequest.upsertRequest();
@@ -153,7 +158,7 @@ public class TransportBulkAction extends HandledTransportAction<BulkRequest, Bul
 
     @Override
     protected void doExecute(Task task, BulkRequest bulkRequest, ActionListener<BulkResponse> listener) {
-        final long indexingBytes = bulkRequest.ramBytesUsed();
+        final long indexingBytes = bulkRequest.ramBytesUsed(); // EUGENE: gives auto generated Index
         final boolean isOnlySystem = isOnlySystem(bulkRequest, clusterService.state().metadata().getIndicesLookup(), systemIndices);
         final Releasable releasable = indexingPressure.markCoordinatingOperationStarted(indexingBytes, isOnlySystem);
         final ActionListener<BulkResponse> releasingListener = ActionListener.runBefore(listener, releasable::close);

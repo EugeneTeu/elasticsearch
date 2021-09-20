@@ -135,7 +135,7 @@ public class IndicesSegmentResponse extends BroadcastResponse {
                         if (segment.attributes != null && segment.attributes.isEmpty() == false) {
                             builder.field("attributes", segment.attributes);
                             Map<String, String> temp = new HashMap<>();
-                            temp.put("TEAST", "ADSASDA");
+                            temp.put("TEAST", "placeholder");
                             builder.field("TEST", temp);
                         }
                         builder.endObject();

@@ -111,8 +111,7 @@ public class ReplicationOperation<
         primary.perform(request, ActionListener.wrap(this::handlePrimaryResult, this::finishAsFailed));
     }
 
-    private void handlePrimaryResult(final PrimaryResultT primaryResult) {
-        this.primaryResult = primaryResult;
+    private void handlePrimaryResult(final PrimaryResultT primaryResult) {this.primaryResult = primaryResult;
         final ReplicaRequest replicaRequest = primaryResult.replicaRequest();
         if (replicaRequest != null) {
             if (logger.isTraceEnabled()) {

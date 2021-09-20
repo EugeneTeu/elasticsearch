@@ -22,7 +22,7 @@ testClusters {
       } else if (licenseType != 'basic') {
         throw new IllegalArgumentException("Unsupported self-generated license type: [" + licenseType + "[basic] or [trial].")
       }
-      setting 'xpack.security.enabled', 'true'
+      setting 'xpack.security.enabled', 'false'
       keystore 'bootstrap.password', 'password'
       user username: 'elastic-admin', password: 'elastic-password', role: 'superuser'
     }
