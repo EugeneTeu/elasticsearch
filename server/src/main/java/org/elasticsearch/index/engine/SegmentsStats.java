@@ -329,7 +329,34 @@ public class SegmentsStats implements Writeable, ToXContentFragment {
         return builder;
     }
 
+    public XContentBuilder toXContentFileInfo(XContentBuilder builder, Params params) throws IOException {
+        builder.startObject(Fields.SEGMENTS_FILE_INFO);
+        builder.field(Fields.COUNT, count);
+        builder.humanReadableField(Fields.MEMORY_IN_BYTES, Fields.MEMORY, getMemory());
+        builder.humanReadableField(Fields.TERMS_MEMORY_IN_BYTES, Fields.TERMS_MEMORY, getTermsMemory());
+        builder.humanReadableField(Fields.STORED_FIELDS_MEMORY_IN_BYTES, Fields.STORED_FIELDS_MEMORY, getStoredFieldsMemory());
+        builder.humanReadableField(Fields.TERM_VECTORS_MEMORY_IN_BYTES, Fields.TERM_VECTORS_MEMORY, getTermVectorsMemory());
+        builder.humanReadableField(Fields.NORMS_MEMORY_IN_BYTES, Fields.NORMS_MEMORY, getNormsMemory());
+        builder.humanReadableField(Fields.POINTS_MEMORY_IN_BYTES, Fields.POINTS_MEMORY, getPointsMemory());
+        builder.humanReadableField(Fields.DOC_VALUES_MEMORY_IN_BYTES, Fields.DOC_VALUES_MEMORY, getDocValuesMemory());
+        builder.humanReadableField(Fields.INDEX_WRITER_MEMORY_IN_BYTES, Fields.INDEX_WRITER_MEMORY, getIndexWriterMemory());
+        builder.humanReadableField(Fields.VERSION_MAP_MEMORY_IN_BYTES, Fields.VERSION_MAP_MEMORY, getVersionMapMemory());
+        builder.humanReadableField(Fields.FIXED_BIT_SET_MEMORY_IN_BYTES, Fields.FIXED_BIT_SET, getBitsetMemory());
+        builder.field(Fields.MAX_UNSAFE_AUTO_ID_TIMESTAMP, maxUnsafeAutoIdTimestamp);
+        builder.startObject(Fields.FILE_SIZES);
+        for (ObjectObjectCursor<String, Long> entry : fileSizes) {
+            builder.startObject(entry.key);
+            builder.humanReadableField(Fields.SIZE_IN_BYTES, Fields.SIZE, new ByteSizeValue(entry.value));
+            builder.field(Fields.DESCRIPTION, FILE_DESCRIPTIONS.getOrDefault(entry.key, "Others"));
+            builder.endObject();
+        }
+        builder.endObject();
+        builder.endObject();
+        return builder;
+    }
+
     static final class Fields {
+        static final String SEGMENTS_FILE_INFO = "segment_info";
         static final String SEGMENTS = "segments";
         static final String COUNT = "count";
         static final String MEMORY = "memory";

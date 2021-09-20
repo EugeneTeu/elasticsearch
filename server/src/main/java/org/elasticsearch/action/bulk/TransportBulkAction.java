@@ -147,7 +147,7 @@ public class TransportBulkAction extends HandledTransportAction<BulkRequest, Bul
             indexRequest = (IndexRequest) docWriteRequest;
             //EUGENE: REPLACE INDEX REQUEST
             Map<String, Object> originalSource = indexRequest.sourceAsMap();
-            originalSource.put("test_get_index_write_request", "eugene");
+//            originalSource.put("test_get_index_write_request", "eugene");
             indexRequest.source(originalSource);
         } else if (docWriteRequest instanceof UpdateRequest) {
             UpdateRequest updateRequest = (UpdateRequest) docWriteRequest;

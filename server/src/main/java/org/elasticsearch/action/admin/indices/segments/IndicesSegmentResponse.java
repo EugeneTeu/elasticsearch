@@ -20,6 +20,9 @@ import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.engine.Segment;
+import org.elasticsearch.index.engine.SegmentsStats;
+import org.elasticsearch.index.get.GetStats;
+import org.elasticsearch.index.shard.IndexShard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,12 +87,15 @@ public class IndicesSegmentResponse extends BroadcastResponse {
 
         for (IndexSegments indexSegments : getIndices().values()) {
             builder.startObject(indexSegments.getIndex());
-
             builder.startObject(Fields.SHARDS);
             for (IndexShardSegments indexSegment : indexSegments) {
+
                 builder.startArray(Integer.toString(indexSegment.getShardId().id()));
                 for (ShardSegments shardSegments : indexSegment) {
                     builder.startObject();
+                    IndexShard indexShard = shardSegments.getIndexShard();
+                    SegmentsStats currentSegmentStats = indexShard.segmentStats(true, true);
+                    currentSegmentStats.toXContentFileInfo(builder, params);
 
                     builder.startObject(Fields.ROUTING);
                     builder.field(Fields.STATE, shardSegments.getShardRouting().state());
@@ -134,9 +140,9 @@ public class IndicesSegmentResponse extends BroadcastResponse {
                         }
                         if (segment.attributes != null && segment.attributes.isEmpty() == false) {
                             builder.field("attributes", segment.attributes);
-                            Map<String, String> temp = new HashMap<>();
-                            temp.put("TEAST", "placeholder");
-                            builder.field("TEST", temp);
+//                            Map<String, String> temp = new HashMap<>();
+//                            temp.put("TEAST", "placeholder");
+//                            builder.field("Segment_info", segment.toString());
                         }
                         builder.endObject();
                     }

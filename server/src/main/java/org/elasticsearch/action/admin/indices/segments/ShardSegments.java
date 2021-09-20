@@ -13,6 +13,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.index.engine.Segment;
+import org.elasticsearch.index.shard.IndexShard;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -24,14 +25,24 @@ public class ShardSegments implements Writeable, Iterable<Segment> {
 
     private final List<Segment> segments;
 
+    private final IndexShard indexShard;
+
     ShardSegments(ShardRouting shardRouting, List<Segment> segments) {
         this.shardRouting = shardRouting;
         this.segments = segments;
+        this.indexShard = null;
+    }
+
+    ShardSegments(ShardRouting shardRouting, List<Segment> segments, IndexShard indexShard) {
+        this.shardRouting = shardRouting;
+        this.segments = segments;
+        this.indexShard = indexShard;
     }
 
     ShardSegments(StreamInput in) throws IOException {
         shardRouting = new ShardRouting(in);
         segments = in.readList(Segment::new);
+        this.indexShard = null;
     }
 
     @Override
@@ -45,6 +56,10 @@ public class ShardSegments implements Writeable, Iterable<Segment> {
 
     public List<Segment> getSegments() {
         return this.segments;
+    }
+
+    public IndexShard getIndexShard() {
+        return this.indexShard;
     }
 
     public int getNumberOfCommitted() {

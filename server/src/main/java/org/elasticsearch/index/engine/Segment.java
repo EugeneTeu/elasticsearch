@@ -48,6 +48,8 @@ public class Segment implements Writeable {
     public Accountable ramTree = null;
     public Map<String, String> attributes;
 
+    public String filePath;
+
     public Segment(StreamInput in) throws IOException {
         name = in.readString();
         generation = Long.parseLong(name.substring(1), Character.MAX_RADIX);
@@ -328,5 +330,9 @@ public class Segment implements Writeable {
                 (segmentSort != null ? ", sort=" + segmentSort : "") +
                 ", attributes=" + attributes +
                 '}';
+    }
+
+    public String getFilePath() {
+        return this.filePath;
     }
 }

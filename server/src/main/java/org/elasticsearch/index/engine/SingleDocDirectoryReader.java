@@ -145,6 +145,7 @@ final class SingleDocDirectoryReader extends DirectoryReader {
             parsedDocs.version().setLongValue(operation.version());
             final IndexWriterConfig writeConfig = new IndexWriterConfig(analyzer).setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             try (IndexWriter writer = new IndexWriter(directory, writeConfig)) {
+                // EUGENE: here, lucene write the doc?
                 writer.addDocument(parsedDocs.rootDoc());
                 final DirectoryReader reader = open(writer);
                 if (reader.leaves().size() != 1 || reader.leaves().get(0).reader().numDocs() != 1) {
